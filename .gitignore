@@ -1,0 +1,6 @@
+*.pyc
+.idea/
+airflow-webserver.pid
+airflow.cfg
+airflow.db
+unittests.cfg
