@@ -1,9 +1,13 @@
 from datetime import datetime, timedelta
 from pprint import pprint
+import time
+
 
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow import DAG
+
 
 default_args = {
     'owner': 'Victory Chang',
@@ -55,5 +59,24 @@ python_task = PythonOperator(
     task_id='print_context',
     provide_context=True,
     python_callable=print_context,
+    dag=dag
+)
+
+def sleep_function(duration):
+    print('sleeping for {} seconds'.format(duration))
+    time.sleep(duration)
+
+python_task_2 = PythonOperator(
+    task_id='sleep_python',
+    python_callable=sleep_function,
+    op_kwargs={'duration': 3},
+    dag=dag
+)
+
+python_task >> python_task_2
+
+
+dummy_task = DummyOperator(
+    task_id='dummy',
     dag=dag
 )
